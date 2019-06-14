@@ -8,10 +8,11 @@ GAME RULES:
 */
 
 //
-var scores, roundScore, activePlayer;
+var scores, roundScore, activePlayer, gameplaying;
 scores = [0,0];
 roundScore = 0;
 activePlayer = 0;//0 for the first player and 1 for the second player
+gameplaying = true;
 
 // console.log(dice);
 
@@ -38,7 +39,8 @@ document.querySelector('.dice').style.display = 'none';
 
 //Event Listener for ROLL DICE
 document.querySelector('.btn-roll').addEventListener('click', function() {
-    //1.Random number generation
+    if(gameplaying) {
+        //1.Random number generation
     var dice = Math.floor(Math.random() * 6 + 1 );
 
     //2.Display the result
@@ -57,11 +59,14 @@ document.querySelector('.btn-roll').addEventListener('click', function() {
         nextPlayer();
 
     }
+}
+    
 })
 
 //Event Listener for HOLD
 document.querySelector('.btn-hold').addEventListener('click', function() {
-    //1.Add current score to GLOBAL score
+    if(gameplaying) {
+        //1.Add current score to GLOBAL score
     scores[activePlayer] += roundScore;
     //2.update UI
     document.querySelector('#score-' + activePlayer).textContent = scores[activePlayer];
@@ -71,10 +76,13 @@ document.querySelector('.btn-hold').addEventListener('click', function() {
         document.querySelector('.dice').style.display = 'none';
         document.querySelector('.player-' + activePlayer + '-panel').classList.add('winner');
         document.querySelector('.player-' + activePlayer + '-panel').classList.remove('active');
+        gameplaying = false;
     } else {
         //Next player
         nextPlayer();
     }
+}
+    
     
 })
 
@@ -90,3 +98,30 @@ function nextPlayer() {
 
         document.querySelector('.dice').style.display = 'none';
 }
+
+document.querySelector('.btn-new').addEventListener('click', function() {
+    scores = [0,0];
+    roundScore = 0;
+    activePlayer = 0;
+    gameplaying = true;
+    
+    document.querySelector('.dice').style.display = 'none';
+
+    //player1
+    document.getElementById('score-0').textContent = '0';
+    document.getElementById('current-0').textContent = '0';
+    //player2
+    document.getElementById('score-1').textContent = '0';
+    document.getElementById('current-1').textContent = '0';
+    //this is to rename the name of the player 
+    document.getElementById('name-0').textContent = 'Player 1';
+    document.getElementById('name-1').textContent = 'Player 2';
+
+    document.querySelector('.player-0-panel').classList.remove('winner');
+    document.querySelector('.player-1-panel').classList.remove('winner');
+    document.querySelector('.player-0-panel').classList.remove('active');
+    document.querySelector('.player-1-panel').classList.remove('active');
+    
+    document.querySelector('.player-0-panel').classList.add('active');
+});
+
