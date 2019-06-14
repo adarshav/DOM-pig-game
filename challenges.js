@@ -8,12 +8,18 @@ GAME RULES:
 */
 
 //
-var scores, roundScore, activePlayer, gameplaying;
+var scores, roundScore, activePlayer, gameplaying, lastDice;
 scores = [0,0];
 roundScore = 0;
 activePlayer = 0;//0 for the first player and 1 for the second player
 gameplaying = true; //it is state variable which controls or says that after 100 points game cannot be played
 
+//******************************************************************* */
+//CHALLENGE 1
+//last dice is done to store the previous value if 2 sixes is rolled in a row the global score is set to 0
+//******************************************************************* */
+//CHALLENGE 2
+//insert an input bar for user to select the total amount
 
 // console.log(dice);
 
@@ -50,7 +56,12 @@ document.querySelector('.btn-roll').addEventListener('click', function() {
     diceDOM.src = 'dice-' + dice + '.png'; //type coercion
 
     //3.update the round score if the rolled number is NOT 1
-    if(dice !== 1) {
+    if(dice === 6 && lastDice === 6) {
+        //player looses the score
+        scores[activePlayer] = 0;
+        document.querySelector('#score-' + activePlayer).textContent = '0';
+        nextPlayer();
+    } else if(dice !== 1) {
         //Add to score
         roundScore = roundScore + dice;
 
@@ -59,8 +70,10 @@ document.querySelector('.btn-roll').addEventListener('click', function() {
     } else {
         //Next Player
         nextPlayer();
-
     }
+        //the previous score is stored 
+        lastDice = dice;
+        console.log(lastDice);
 }
     
 })
@@ -72,8 +85,17 @@ document.querySelector('.btn-hold').addEventListener('click', function() {
     scores[activePlayer] += roundScore;
     //2.update UI
     document.querySelector('#score-' + activePlayer).textContent = scores[activePlayer];
+    //CHALLENGE 2
+    var input = document.querySelector('.final-score').value;
+    var winningScore;
+    if(input) {
+        winningScore = input;
+    } else {
+        winningScore = 100;
+    }
+
     //3.check the player has WON or not 
-    if(scores[activePlayer] >= 20) {
+    if(scores[activePlayer] >= winningScore) {
         document.querySelector('#name-' + activePlayer).textContent = 'WINNER!!';
         document.querySelector('.dice').style.display = 'none';
         document.querySelector('.player-' + activePlayer + '-panel').classList.add('winner');
